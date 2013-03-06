@@ -14,37 +14,41 @@
  */
 package org.milyn.validation;
 
-import java.io.IOException;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.milyn.SmooksException;
-import org.milyn.resource.URIResourceLocator;
-import org.milyn.javabean.repository.BeanRepository;
-import org.milyn.util.FreeMarkerTemplate;
-import org.milyn.xml.DomUtils;
-import org.milyn.event.report.annotation.VisitBeforeReport;
-import org.milyn.event.report.annotation.VisitAfterReport;
-import org.milyn.payload.FilterResult;
-import org.milyn.cdr.annotation.AppContext;
-import org.milyn.cdr.annotation.ConfigParam;
-import org.milyn.cdr.annotation.Config;
-import org.milyn.cdr.SmooksResourceConfiguration;
 import org.milyn.cdr.SmooksConfigurationException;
+import org.milyn.cdr.SmooksResourceConfiguration;
+import org.milyn.cdr.annotation.AppContext;
+import org.milyn.cdr.annotation.Config;
+import org.milyn.cdr.annotation.ConfigParam;
 import org.milyn.container.ApplicationContext;
 import org.milyn.container.ExecutionContext;
 import org.milyn.delivery.annotation.Initialize;
 import org.milyn.delivery.dom.DOMVisitAfter;
 import org.milyn.delivery.sax.SAXElement;
+import org.milyn.delivery.sax.SAXUtil;
 import org.milyn.delivery.sax.SAXVisitAfter;
 import org.milyn.delivery.sax.SAXVisitBefore;
-import org.milyn.delivery.sax.SAXUtil;
+import org.milyn.event.report.annotation.VisitAfterReport;
+import org.milyn.event.report.annotation.VisitBeforeReport;
+import org.milyn.payload.FilterResult;
+import org.milyn.resource.URIResourceLocator;
 import org.milyn.rules.RuleEvalResult;
 import org.milyn.rules.RuleProvider;
 import org.milyn.rules.RuleProviderAccessor;
+import org.milyn.util.FreeMarkerTemplate;
+import org.milyn.xml.DomUtils;
 import org.w3c.dom.Element;
 
 /**
@@ -318,7 +322,8 @@ public final class Validator implements SAXVisitBefore, SAXVisitAfter, DOMVisitA
         }
 
         if(parentFolder != null) {
-            messageBundleBaseName = parentFolder.getPath() + "/i18n/" + messageBundleBaseName;
+            String parentPath = StringUtils.removeEnd(ruleSource, srcFileName);
+            messageBundleBaseName = parentPath + "i18n/" + messageBundleBaseName;
         } else {
             messageBundleBaseName = "i18n/" + messageBundleBaseName;
         }
